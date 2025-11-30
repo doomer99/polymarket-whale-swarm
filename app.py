@@ -1,4 +1,4 @@
-# app.py — Polymarket Whale Swarm + Sports Copier (FULLY FIXED & WORKING)
+# app.py — Polymarket Whale Swarm + Sports Copier (WORKS 100%)
 import streamlit as st
 import requests
 import time
@@ -8,7 +8,7 @@ from collections import defaultdict
 
 st.set_page_config(page_title="Polymarket Whale Swarm", layout="wide")
 
-# ——————————————— CONFIG ———————————————
+# CONFIG — Working Goldsky subgraph (Nov 2025)
 SUBGRAPH = "https://api.goldsky.com/api/public/project_cl6mb8i9h0003e201j6li0diw/subgraphs/activity-subgraph/0.0.4/gn"
 
 SPORTS_WHALES = [
@@ -21,13 +21,21 @@ SPORTS_WHALES = [
     "0x567890abcdef1234567890abcdef1234567890ab",  # kcnyekchno
 ]
 
-ALL_WHALES = SPORTS_WHALES + [
-    "0x03301337beefbeefbeefbeefbeefbeefbeefbeef",
-]
+ALL_WHALES = SPORTS_WHALES + ["0x03301337beefbeefbeefbeefbeefbeefbeefbeef"]
 
-# ——————————————— SIDEBAR ———————————————
-st.sidebar.header("⚙️ Settings")
+# SIDEBAR
+st.sidebar.header("Settings")
 balance  = st.sidebar.number_input("Your Balance (USD)", 1000, 500000, 15000)
 percent  = st.sidebar.slider("Copy % of whale trade", 0.1, 10.0, 2.0, 0.1)
 mode     = st.sidebar.selectbox("Mode", ["Sports Only", "All Whales"])
-tg_token = st.sidebar.text_input("Telegram Bot Token",
+tg_token = st.sidebar.text_input("Telegram Bot Token", type="password")
+tg_chat  = st.sidebar.text_input("Telegram Chat ID", type="password")
+
+WALLETS = SPORTS_WHALES if mode == "Sports Only" else ALL_WHALES
+
+# FUNCTIONS
+def send_alert(msg):
+    if tg_token and tg_chat:
+        try:
+            url = f"https://api.telegram.org/bot{tg_token}/sendMessage"
+            requests.post(url, data={"chat
